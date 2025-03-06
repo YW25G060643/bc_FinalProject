@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Stock Quote</title>
+</head>
+<body>
+    <h1 th:text="'Quote for: ' + ${symbol}"></h1>
+    
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+    
+    <table th:unless="${#lists.isEmpty(quotes)}">
+        <tr>
+            <th>Symbol</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Currency</th>
+        </tr>
+        <tr th:each="quote : ${quotes}">
+            <td th:text="${quote.symbol}"></td>
+            <td th:text="${quote.shortName}"></td>
+            <td th:text="${#numbers.formatCurrency(quote.regularMarketPrice)}"></td>
+            <td th:text="${quote.currency}"></td>
+        </tr>
+    </table>
+</body>
+</html>

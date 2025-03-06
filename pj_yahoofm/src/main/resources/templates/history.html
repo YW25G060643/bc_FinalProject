@@ -1,0 +1,29 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Historical Data</title>
+</head>
+<body>
+    <h1 th:text="'History for: ' + ${symbol}"></h1>
+    
+    <div th:if="${error}" th:text="${error}"></div>
+    
+    <table th:unless="${#lists.isEmpty(history)}">
+        <tr>
+            <th>Date</th>
+            <th>Open</th>
+            <th>High</th>
+            <th>Low</th>
+            <th>Close</th>
+            <th>Volume</th>
+        </tr>
+        <tr th:each="data : ${history}">
+            <td th:text="${#temporals.format(data.date, 'yyyy-MM-dd')}"></td>
+            <td th:text="${#numbers.formatDecimal(data.open, 1, 2)}"></td>
+            <td th:text="${#numbers.formatDecimal(data.high, 1, 2)}"></td>
+            <td th:text="${#numbers.formatDecimal(data.low, 1, 2)}"></td>
+            <td th:text="${#numbers.formatDecimal(data.close, 1, 2)}"></td>
+            <td th:text="${#numbers.formatInteger(data.volume, 3, 'COMMA')}"></td>
+        </tr>
+    </table>
+</body>
+</html>
