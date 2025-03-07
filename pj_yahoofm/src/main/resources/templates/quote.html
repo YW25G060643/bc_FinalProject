@@ -7,6 +7,16 @@
     <h1 th:text="'Quote for: ' + ${symbol}"></h1>
     
     <div th:if="${error}" class="error" th:text="${error}"></div>
+
+    <form action="#" th:action="@{/quote}" method="get">
+        <input 
+            type="text" 
+            name="symbol" 
+            placeholder="输入股票代码 (如: 0388.HK)"
+            required
+        >
+        <button type="submit">查询</button>
+    </form>
     
     <table th:unless="${#lists.isEmpty(quotes)}">
         <tr>
