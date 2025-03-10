@@ -48,13 +48,13 @@ public class CrumbManager {
             if (matcher.find()) {
                 String crumbFromResponse = matcher.group(1);
                 crumbFromResponse = crumbFromResponse.replace("\\\\u002F", "/");
-                System.out.println("成功获取crumb: " + crumbFromResponse);
+                System.out.println("get crumb successfully: " + crumbFromResponse);
                 return crumbFromResponse;
             }else{
-                throw new Exception("在返回数据中未找到 crumb 信息。");
+                throw new Exception("no crumb info。");
             }
         } catch (Exception e){
-            System.out.println("获取 crumb 时出错: " + e.getMessage());
+            System.out.println("error when getting crumb : " + e.getMessage());
             e.printStackTrace();
             return null;
         }

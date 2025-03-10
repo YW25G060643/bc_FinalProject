@@ -25,7 +25,6 @@ public class CrumbService {
     public String getFreshCrumb() throws IOException, InterruptedException {
         cookieManager.getCookieStore().removeAll();
 
-        // Step 1: 获取初始 Cookie（带完整请求头）
         HttpRequest initRequest = HttpRequest.newBuilder()
                 .uri(URI.create("https://finance.yahoo.com"))
                 .headers(
@@ -40,10 +39,8 @@ public class CrumbService {
         HttpResponse<Void> initResponse = httpClient.send(initRequest, HttpResponse.BodyHandlers.discarding());
         System.out.println("Init Cookies: " + cookieManager.getCookieStore().getCookies());
 
-        // 随机延迟
         Thread.sleep(1500 + new Random().nextInt(1500));
 
-        // Step 2: 获取 Crumb
         HttpRequest crumbRequest = HttpRequest.newBuilder()
                 .uri(URI.create("https://query1.finance.yahoo.com/v1/test/getcrumb"))
                 .headers(
