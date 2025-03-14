@@ -3,43 +3,62 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public class YahooFinanceManager {
-    private CrumbManager crumbManager;
+    private final CrumbManager crumbManager;
 
-    public YahooFinanceManager() {
-        crumbManager = new CrumbManager();
+    // ✅ 修复构造函数（关键点）
+    public YahooFinanceManager(CrumbManager crumbManager) {
+        if (crumbManager == null) {
+            throw new IllegalArgumentException("CrumbManager 不能为空");
+        }
+        this.crumbManager = crumbManager; // 注意变量名拼写
     }
 
-
+    // ✅ 修复方法签名（关键点）
     public String getQuote(String symbol) {
-        String crumb = crumbManager.getCrumb();
-        if (crumb == null) {
-            System.out.println("no crumb found");
-            return null;
-        }
-        String urlStr = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=" 
-                        + symbol + "&crumb=" + crumb;
         try {
+            // 获取crumb令牌
+            String crumb = crumbManager.getCrumb();
+            if (crumb == null || crumb.isEmpty()) {
+                System.err.println("[ERROR] 无法获取有效crumb");
+                return null;
+            }
+
+            // 编码股票代码
+            String encodedSymbol = URLEncoder.encode(symbol, StandardCharsets.UTF_8.name());
+            
+            // 构建请求URL
+            String urlStr = String.format(
+                "https://query1.finance.yahoo.com/v7/finance/quote?symbols=%s&crumb=%s",
+                encodedSymbol, 
+                crumb
+            );
+            
+            // 发送请求
             URL url = new URL(urlStr);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-
-            InputStream is = connection.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            String line;
-            SprringBuilder rseponseBuilder = new StringBuilder();
-            while ((line = reader.readLine()) != null) {
-                rseponseBuilder.append(line);
+            connection.setConnectTimeout(5000);
+            
+            // 读取响应
+            try (BufferedReader reader = new BufferedReader(
+                     new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
+                
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                
+                return response.toString();
             }
-            StringBuilder responseBuilder = new StringBuilder();
-            reader.close();
-            String response = rseponseBuilder.toString();
-            return response;
         } catch (Exception e) {
+            System.err.printf("[ERROR] 获取股票 %s 报价失败：%s%n", symbol, e.getMessage());
             e.printStackTrace();
-            System.out.println("error happened when requiring " + symbol + "'s price " + e.getMessage());
+            return null;
         }
-        return null;
     }
 }

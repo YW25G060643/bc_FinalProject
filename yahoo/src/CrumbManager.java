@@ -20,12 +20,12 @@ public class CrumbManager {
     }
     public String getCrumb() {
         if (crumb == null || crumb.isEmpty()) {
-            crumb = fenchCrumb();
+            crumb = fetchCrumb();
         }
         return crumb;
     }
 
-    private String fenchCrumb() {
+    private String fetchCrumb() {
         try{
             cookieManager.getCookieStore().removeAll();
             URL url = new URL(CRUMB_URL);
@@ -43,7 +43,7 @@ public class CrumbManager {
 
             String response = rseponseBuilder.toString();
 
-            Pattern pattern = pattern.compile("\"CrumbStore\":\\{\"crumb\":\"(.*?)\"\\}");
+            final Pattern CRUMB_PATTERN = pattern.compile("\"CrumbStore\":\\{\"crumb\":\"(.*?)\"\\}");
             Matcher matcher = pattern.matcher(response);
             if (matcher.find()) {
                 String crumbFromResponse = matcher.group(1);
