@@ -9,15 +9,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CrumbManager {
-    private static final String CRUMB_URL =  "https://finance.yahoo.com/quote/0388.HK/history";
+    private static final String CRUMB_URL = "https://finance.yahoo.com/quote/0388.HK/history";
     private String crumb;
     private CookieManager cookieManager;
-    
+
     public CrumbManager() {
         cookieManager = new CookieManager();
         CookieHandler.setDefault(cookieManager);
         this.crumb = fetchCrumb();
     }
+
     public String getCrumb() {
         if (crumb == null || crumb.isEmpty()) {
             crumb = fetchCrumb();
@@ -26,7 +27,7 @@ public class CrumbManager {
     }
 
     private String fetchCrumb() {
-        try{
+        try {
             cookieManager.getCookieStore().removeAll();
             URL url = new URL(CRUMB_URL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -35,26 +36,28 @@ public class CrumbManager {
 
             InputStream is = connection.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            String Line;
+            StringBuilder responseBuilder = new StringBuilder(); // 声明并实例化 responseBuilder
+            String line;
             while ((line = reader.readLine()) != null) {
-                rseponseBuilder.append(line);
+                responseBuilder.append(line); // 累加每一行到 responseBuilder
             }
             reader.close();
 
-            String response = rseponseBuilder.toString();
+            String response = responseBuilder.toString();
 
-            final Pattern CRUMB_PATTERN = pattern.compile("\"CrumbStore\":\\{\"crumb\":\"(.*?)\"\\}");
-            Matcher matcher = pattern.matcher(response);
+            // 定义并使用正则表达式模式
+            final Pattern CRUMB_PATTERN = Pattern.compile("\"CrumbStore\":\\{\"crumb\":\"(.*?)\"\\}");
+            Matcher matcher = CRUMB_PATTERN.matcher(response);
             if (matcher.find()) {
                 String crumbFromResponse = matcher.group(1);
-                crumbFromResponse = crumbFromResponse.replace("\\\\u002F", "/");
+                crumbFromResponse = crumbFromResponse.replace("\\\\u002F", "/"); // 转义字符替换
                 System.out.println("get crumb successfully: " + crumbFromResponse);
                 return crumbFromResponse;
-            }else{
-                throw new Exception("no crumb info。");
+            } else {
+                throw new Exception("No crumb info.");
             }
-        } catch (Exception e){
-            System.out.println("error when getting crumb : " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error when getting crumb: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
