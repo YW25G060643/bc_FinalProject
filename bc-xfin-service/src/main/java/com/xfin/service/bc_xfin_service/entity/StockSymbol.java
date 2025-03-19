@@ -1,26 +1,24 @@
-package com.xfin.service.bc_xfin_service.model;
+package com.xfin.service.bc_xfin_service.entity;
 
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@EntityScan
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Builder
 @Setter
+@Builder
 public class StockSymbol {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String symbol;
-    // getters/setters
 }
