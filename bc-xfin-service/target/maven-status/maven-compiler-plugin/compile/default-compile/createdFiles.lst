@@ -1,0 +1,4 @@
+com\example\bc_xfin_service\config\WebClientConfig.class
+com\example\bc_xfin_service\BcXfinServiceApplication.class
+com\example\bc_xfin_service\cleaner\RedisCleaner.class
+com\example\bc_xfin_service\config\RedisConfig.class
