@@ -1,4 +1,4 @@
-package com.xfin.service.bc_xfin_service;
+package com.example.bc_xfin_service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
